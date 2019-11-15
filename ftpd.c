@@ -389,6 +389,11 @@ main(int argc, char *argv[])
 	}
 	endpwent();
 
+	if (pledge("proc", NULL) == -1) {
+		syslog(LOG_ERR, "pledge failed");
+		exit(1);
+	}
+
 	if (daemon_mode) {
 		int *fds, fd;
 		struct pollfd *pfds;
