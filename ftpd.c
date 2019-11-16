@@ -389,11 +389,6 @@ main(int argc, char *argv[])
 	}
 	endpwent();
 
-	if (pledge("proc stdio rpath dns inet", NULL) == -1) {
-		syslog(LOG_ERR, "pledge failed");
-		exit(1);
-	}
-
 	if (daemon_mode) {
 		int *fds, fd;
 		struct pollfd *pfds;
@@ -1026,6 +1021,10 @@ pass(char *passwd)
 		 */
 		if (chroot(rootdir) == -1 || chdir("/") == -1) {
 			reply(550, "Can't set guest privileges.");
+			goto bad;
+		}
+		if (pledge("id stdio rpath dns inet proc tty getpw wpath cpath recvfd sendfd", NULL) == -1) {
+			reply(550, "Can't setup pledge(2).");
 			goto bad;
 		}
 		strlcpy(pw->pw_dir, "/", sz_pw_dir);
