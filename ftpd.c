@@ -1023,7 +1023,8 @@ pass(char *passwd)
 			reply(550, "Can't set guest privileges.");
 			goto bad;
 		}
-		if (pledge("id stdio rpath dns inet proc tty getpw wpath cpath recvfd sendfd", NULL) == -1) {
+		if (pledge("id stdio rpath dns inet proc tty getpw wpath cpath "
+		    "recvfd sendfd", NULL) == -1) {
 			reply(550, "Can't setup pledge(2).");
 			goto bad;
 		}
