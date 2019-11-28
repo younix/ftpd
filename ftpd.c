@@ -1023,11 +1023,6 @@ pass(char *passwd)
 			reply(550, "Can't set guest privileges.");
 			goto bad;
 		}
-		if (pledge("id stdio rpath dns inet proc tty getpw wpath cpath "
-		    "recvfd sendfd", NULL) == -1) {
-			reply(550, "Can't setup pledge(2).");
-			goto bad;
-		}
 		strlcpy(pw->pw_dir, "/", sz_pw_dir);
 		if (setenv("HOME", "/", 1) == -1) {
 			reply(550, "Can't setup environment.");
@@ -1050,6 +1045,11 @@ pass(char *passwd)
 			goto bad;
 		} else
 			lreply(230, "No directory! Logging in with home=/");
+	}
+	if (pledge("id stdio rpath dns inet proc tty getpw wpath cpath "
+	    "recvfd sendfd", NULL) == -1) {
+		reply(550, "Can't setup pledge(2).");
+		goto bad;
 	}
 	if (setresgid(pw->pw_gid, pw->pw_gid, pw->pw_gid) == -1) {
 		reply(550, "Can't set gid.");
